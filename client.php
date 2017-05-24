@@ -6,6 +6,7 @@ fetch('insert.php?msg='+tts+'&cids=1,2')
 const source = new EventSource('sse.php?cid='+'<?=$_REQUEST["cid"]?>')
 source.onmessage = function (event) {
     //alert(event.data);
+    document.title = event.data
     document.all.out.innerHTML += event.data }
 </script>
 <a onclick=send()>send</a>
