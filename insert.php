@@ -1,6 +1,7 @@
 <?php
-
-require('db_connect.php');
+try{
+    require('db_connect.php');
+} catch(PDOException $e){ die('PDOException: '.$e->getMessage()); }
 
 $msg = @$_REQUEST['msg'];
 if($msg=='') $msg='...';
