@@ -8,7 +8,7 @@ const source = new EventSource('sse.php?cid='+'<?=$cid?>')
 source.onmessage = function (event) {
     //alert(event.data);
     document.title = event.data
-    document.all.out.innerHTML += event.data+'<br>'
+    document.all.out.innerHTML += event.data.replace(/</g, "&lt;").replace(/>/g, "&gt;")+'<br>'
 }
 </script>
 cid: <?=$cid?> <button onclick=send()>send</button>
