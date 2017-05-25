@@ -7,7 +7,8 @@ const source = new EventSource('sse.php?cid='+'<?=$_REQUEST["cid"]?>')
 source.onmessage = function (event) {
     //alert(event.data);
     document.title = event.data
-    document.all.out.innerHTML += event.data }
+    document.all.out.innerHTML += event.data+'<br>'
+}
 </script>
 <a onclick=send()>send</a>
 <input id=tts>

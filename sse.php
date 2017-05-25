@@ -9,10 +9,8 @@ function getMessage(){
         $result = $db->query("select * from messages where cid={$cid} order by id asc limit 1");
         $got = $result->fetchAll();
         if($got){
-            $msg = $got[0]['msg'];
-            //echo 'id: '.$got[0]['id'].'\n';
-            $text = $msg!==''?$msg.'<br>':'';
-            echo "data: ".$text."\n\n";
+            echo 'id: '.$got[0]['id']."\n";
+            echo 'data: '.$got[0]['msg']."\n\n";
             $db->query("delete from messages where cid={$cid} order by id asc limit 1");
         }
     }catch(PDOException $e)
