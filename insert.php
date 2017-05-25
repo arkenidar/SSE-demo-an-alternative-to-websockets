@@ -2,21 +2,16 @@
 
 require('db_connect.php');
 
-$msg = @$_REQUEST['msg'];
-if($msg=='') $msg='default_message!!';
-$msg = $db->quote($msg);
-
-$cid_sequence = explode(',',@$_REQUEST['cids']);
+$msg = $_REQUEST['msg'];
 $cid_sequence=[1,2];
 
 foreach($cid_sequence as $cid){
-    //$cid = ctype_digit($cid);
-    $sql = "INSERT INTO messages (msg,cid) VALUES ({$msg},{$cid});\n";
-    //echo $sql;
     try{
-        $db->exec($sql);
-    }catch(PDOException $e)
-    {
-    print 'Exception : '.$e->getMessage();
-    }
+        $stmt = $db->prepare('INSERT INTO messages (msg,cid) VALUES (:msg,:cid)');
+        $stmt->bindParam(':msg', $msg);
+        $stmt->bindParam(':cid', $cid);
+
+        $stmt->execute();
+
+    } catch(PDOException $e){ print 'PDOException: '.$e->getMessage(); }
 }
