@@ -2,7 +2,9 @@
 
 require('db_connect.php');
 
-$msg = $_REQUEST['msg'];
+$msg = @$_REQUEST['msg'];
+if($msg=='') $msg='...';
+
 $cid_sequence=[1,2];
 
 foreach($cid_sequence as $cid){

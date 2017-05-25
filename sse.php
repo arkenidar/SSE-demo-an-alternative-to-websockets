@@ -4,19 +4,23 @@ function getMessage(){
     if(!isset($_REQUEST['cid'])) $cid=1;
     else $cid = (int)$_REQUEST['cid'];
 
-    require('db_connect.php');
     try{
-        $result = $db->query("select * from messages where cid={$cid} order by id asc limit 1");
-        $got = $result->fetchAll();
-        if($got){
-            echo 'id: '.$got[0]['id']."\n";
-            echo 'data: '.$got[0]['msg']."\n\n";
-            $db->query("delete from messages where cid={$cid} order by id asc limit 1");
+        require('db_connect.php');
+
+        $stmt = $db->prepare('select * from messages where cid=:cid order by id asc limit 1');
+        $stmt->bindParam(':cid', $cid);
+
+        if($stmt->execute()){
+            if ($row = $stmt->fetch()) {
+                echo 'id: '.$row['id']."\n";
+                echo 'data: '.$row['msg']."\n\n";
+
+                $stmt = $db->prepare('delete from messages where cid=:cid order by id asc limit 1');
+                $stmt->bindParam(':cid', $cid);
+                $stmt->execute();
+            }
         }
-    }catch(PDOException $e)
-    {
-        print 'data: Exception : '.$e->getMessage()."\n\n";
-    }
+    }catch(PDOException $e){ echo 'data: PDOException: '.$e->getMessage()."\n\n"; }
 }
 
 header('Content-Type: text/event-stream');
@@ -24,16 +28,12 @@ header('Cache-Control: no-cache');
 
 if (ob_get_level() == 0) ob_start();
 
-for ($i = 0; $i<10; $i++){
+while(true){
 
-    //$time = date('r');
-    //$text = "The server time is: {$time}<br>";
-    //echo "data: ".$text."\n\n";
     getMessage();
 
-    ob_flush();
     flush();
-    //sleep(2);
+    ob_flush();
 }
 
 ob_end_flush();
