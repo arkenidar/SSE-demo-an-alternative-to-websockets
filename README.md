@@ -7,3 +7,4 @@ ServerSentEvents (SSE) messaging system (chat between 2 clients). Simpler soluti
 You can pay me for adaptations, improvements and related consulting.
 Remember to respect the liberal MIT licence! (e.g. give due credit).
 Commercial use allowed if licence is properly applied!
+I'm the original author so I can make exceptions to licencing terms for you, as you may need. (e.g. to use this for your purposes without mentioning me i.e. using a different licence).
