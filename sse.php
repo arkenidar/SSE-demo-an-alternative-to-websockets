@@ -1,6 +1,9 @@
 <?php
 
 function getMessage(){
+
+    $sleep=false;
+
     if(!isset($_REQUEST['cid'])) $cid=1;
     else $cid = (int)$_REQUEST['cid'];
 
@@ -13,14 +16,16 @@ function getMessage(){
         if($stmt->execute()){
             if ($row = $stmt->fetch()) {
                 echo 'id: '.$row['id']."\n";
-                echo 'data: '.$row['msg']."\n\n";
+                echo 'data: M'.$row['msg']."\n\n";
 
                 $stmt = $db->prepare('delete from messages where cid=:cid order by id asc limit 1');
                 $stmt->bindParam(':cid', $cid);
                 $stmt->execute();
             }
         }
-    }catch(PDOException $e){ echo 'data: PDOException: '.$e->getMessage()."\n\n"; }
+    }catch(PDOException $e){ echo 'data: EPDOException: '.$e->getMessage()."\n\n"; $sleep=true;}
+
+    return $sleep;
 }
 
 header('Content-Type: text/event-stream');
@@ -30,10 +35,12 @@ if (ob_get_level() == 0) ob_start();
 
 while(true){
 
-    getMessage();
+    $sleep=getMessage();
 
     flush();
     ob_flush();
+
+    if($sleep) sleep(1);
 }
 
 ob_end_flush();

@@ -2,13 +2,20 @@
 <script>
 function send(){
 var tts = document.all.tts.value
+document.all.tts.value=''
 fetch('insert.php?msg='+tts+'&cids=1,2')
 }
 const source = new EventSource('sse.php?cid='+'<?=$cid?>')
 source.onmessage = function (event) {
-    //alert(event.data);
-    document.title = event.data
-    document.all.out.innerHTML += event.data.replace(/</g, "&lt;").replace(/>/g, "&gt;")+'<br>'
+    const msg_type=event.data[0]
+    const data=event.data.slice(1)
+    if(msg_type=='M'){
+        //alert(data);
+        document.title = data
+        document.all.out.innerHTML += data.replace(/</g, "&lt;").replace(/>/g, "&gt;")+'<br>'
+    }else if(msg_type=='E'){
+        console.log(data)
+    }
 }
 </script>
 cid: <?=$cid?> <button onclick=send()>send</button>
