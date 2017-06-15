@@ -18,3 +18,5 @@ foreach($cid_sequence as $cid){
 
     } catch(PDOException $e){ print 'PDOException: '.$e->getMessage(); }
 }
+
+$db = null;

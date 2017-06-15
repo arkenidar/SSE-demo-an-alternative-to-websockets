@@ -44,3 +44,5 @@ while(true){
 }
 
 ob_end_flush();
+
+$db = null;
