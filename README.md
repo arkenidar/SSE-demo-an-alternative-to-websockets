@@ -19,3 +19,4 @@ MORE ABOUT ServerSentEvents:
 ----------------------------
 * https://www.w3schools.com/html/html5_serversentevents.asp
 * https://www.html5rocks.com/en/tutorials/eventsource/basics/
+* https://github.com/arkenidar/polyfills/blob/master/EventSource.js
