@@ -1,25 +1,41 @@
 <!doctype html>
 <html>
-<head></head>
+
+<head>
+<script src="jquery-3.2.1.min.js"></script>
+</head>
+
 <body>
-<?php $cid = (int)@$_GET["cid"]; ?>
-<div id="warning"></div>
-cid: <?php echo $cid; ?> <button onclick="send()">send</button>
-<input id="tts">
-<a href="client.php?cid=0" target="_blank">0</a> <a href="client.php?cid=1" target="_blank">1</a>
+<?php
+$cid = (int)@$_GET['cid'];
+$console_tag_enabled = (int)@$_GET['console'];
+?>
+
+<div id="console"></div>
+<button onclick="location.reload()">cid: <?php echo $cid; ?></button> <a href="client.php?cid=0" target="_blank">0</a> <a href="client.php?cid=1" target="_blank">1</a> <br>
+<input id="tts"> <button id="send">send</button>
 <div id="out"></div>
+
 <script type="text/javascript">
+function module(){
+
+var console_tag_enabled = (<?php echo $console_tag_enabled; ?>)!=0;
+
+function escape_html_tag(unescaped_text){
+    return unescaped_text.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+}
+
 function id(id_to_get){
     return document.getElementById(id_to_get)
 }
 
-function warning_tag(html_to_write){
-    id('warning').innerHTML += html_to_write+'<br>'
+function console_tag(html_to_write){
+    id('console').innerHTML += escape_html_tag(html_to_write) + '<br>'
 }
 
-function warn(warning){
-    //warning_tag(warning)
-    console.log(warning)
+function log(text_to_log){
+    if(console_tag_enabled) console_tag(text_to_log)
+    console.log(text_to_log)
 }
 
 function get(url_to_get, success_cb){
@@ -35,23 +51,48 @@ function get(url_to_get, success_cb){
 }
 
 function send(){
-var tts = id('tts').value
-id('tts').value=''
-get('insert.php?msg='+tts+'&cids=1,2', function(){})
+    log('send')
+    
+    var tts = id('tts').value
+    id('tts').value=''
+
+    var jqxhr = $.get( 'insert.php?msg='+tts+'&cids=0,1', function() {
+        log('insert successful:' + tts)
+    })
+    .fail(function() {
+        log('ajax error in insert:' + tts)
+    })
 }
 
-var source = new EventSource('sse.php?cid='+'<?php echo $cid; ?>')
-source.onmessage = function (event) {
-    var msg_type = event.data[0]
-    var data = event.data.slice(1)
+var source_demo = 'demo_sse.php'
+var source_app = 'sse.php?cid='+'<?php echo $cid; ?>'
+
+var event_source = new EventSource(source_app);
+event_source.onmessage = function (event) {
+   //log('event.data: '+event.data)
+   document.getElementById("out").innerHTML += escape_html_tag(event.data) + '<br>';
+}
+
+log('EventSource present?:'+('EventSource' in window))
+event_source.onmessage = function (event) {
+    var data = event.data;
+    //log('onmessage:'+data)
+    var msg_type = data[0]
+    var data = data.slice(1)
     if(msg_type=='M'){
         //alert(data);
         document.title = data
-        id('out').innerHTML += data.replace(/</g, "&lt;").replace(/>/g, "&gt;")+'<br>'
+        id('out').innerHTML += escape_html_tag(data) + '<br>'
     }else if(msg_type=='E'){
-        console.log(data)
+        log(data)
     }
 }
+
+log('initialized')
+$('button#send').click(send)
+
+} // end of module function
+$(module)
 </script>
 </body>
 </html>
