@@ -1,10 +1,14 @@
-<?php $cid = isset($_REQUEST["cid"])?(int)$_REQUEST["cid"]:1; ?>
+<!doctype html>
+<html>
+<head></head>
+<body>
+<?php $cid = (int)@$_GET["cid"]; ?>
 <div id="warning"></div>
-cid: <?=$cid?> <button onclick="send()">send</button>
+cid: <?php echo $cid; ?> <button onclick="send()">send</button>
 <input id="tts">
-<a href="client.php?cid=1" target="_blank">1</a> <a href="client.php?cid=2" target="_blank">2</a>
+<a href="client.php?cid=0" target="_blank">0</a> <a href="client.php?cid=1" target="_blank">1</a>
 <div id="out"></div>
-<script>
+<script type="text/javascript">
 function id(id_to_get){
     return document.getElementById(id_to_get)
 }
@@ -36,7 +40,7 @@ id('tts').value=''
 get('insert.php?msg='+tts+'&cids=1,2', function(){})
 }
 
-var source = new EventSource('sse.php?cid='+'<?=$cid?>')
+var source = new EventSource('sse.php?cid='+'<?php echo $cid; ?>')
 source.onmessage = function (event) {
     var msg_type = event.data[0]
     var data = event.data.slice(1)
@@ -49,3 +53,5 @@ source.onmessage = function (event) {
     }
 }
 </script>
+</body>
+</html>
