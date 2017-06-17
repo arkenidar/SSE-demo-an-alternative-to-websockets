@@ -10,17 +10,17 @@ function getMessage(){
     try{
         require('db_connect.php');
 
-        $stmt = $db->prepare('select * from messages where cid=:cid order by id asc limit 1');
-        $stmt->bindParam(':cid', $cid);
+        $stmt_get = $db->prepare('select * from messages where cid=:cid order by id asc limit 1');
+        $stmt_delete = $db->prepare('delete from messages where cid=:cid order by id asc limit 1');
+        $stmt_get->bindParam(':cid', $cid);
 
-        if($stmt->execute()){
-            if ($row = $stmt->fetch()) {
+        if($stmt_get->execute()){
+            if ($row = $stmt_get->fetch()) {
                 echo 'id: '.$row['id']."\n";
                 echo 'data: M'.$row['msg']."\n\n";
 
-                $stmt = $db->prepare('delete from messages where cid=:cid order by id asc limit 1');
-                $stmt->bindParam(':cid', $cid);
-                $stmt->execute();
+                $stmt_delete->bindParam(':cid', $cid);
+                $stmt_delete->execute();
             }
         }
     }catch(PDOException $e){ echo 'data: EPDOException: '.$e->getMessage()."\n\n"; $sleep=true;}
@@ -46,3 +46,4 @@ while(true){
 ob_end_flush();
 
 $db = null;
+?>
