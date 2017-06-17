@@ -1,7 +1,12 @@
 <?php
+
 try{
-    require('db_connect.php');
-} catch(PDOException $e){ die('PDOException: '.$e->getMessage()); }
+    require_once('db_connect.php');
+    $db = db_connect();
+} catch(PDOException $pdo_exception){
+    $db = null;
+    db_exception($pdo_exception);
+}
 
 $msg = @$_REQUEST['msg'];
 if($msg=='') $msg='...';
@@ -15,7 +20,10 @@ foreach($cid_sequence as $cid){
 
         $stmt->execute();
 
-    } catch(PDOException $e){ print 'PDOException: '.$e->getMessage(); }
+    } catch(PDOException $pdo_exception){
+        $db = null;
+        db_exception($pdo_exception);
+    }
 }
 
 $db = null;
