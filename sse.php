@@ -1,6 +1,6 @@
 <?php
 
-function getMessage(){
+function getMessage($cid){
     if (ob_get_level() == 0) ob_start();
     $sleep=false;
     try{
@@ -14,7 +14,7 @@ function getMessage(){
             if ($row = $stmt_get->fetch()) {
                 // send item
                 echo 'id: '.$row['id']."\n";
-                echo 'data: M'.$row['msg']."\n\n";                
+                echo 'data: M'.$row['msg']."\n\n";
                 // flush
                 flush();
                 ob_flush();
@@ -27,7 +27,7 @@ function getMessage(){
         $sleep=true;
         $db=null;
         echo 'data: E';
-        db_exception($pdo_exception);        
+        db_exception($pdo_exception);
         echo "\n\n";
     }
 
