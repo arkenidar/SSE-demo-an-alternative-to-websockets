@@ -23,7 +23,7 @@ function db_exception($pdo_exception){
 function db_init(){
     $db = db_connect();
     //create the database
-    $db->exec("CREATE TABLE messages (id INTEGER PRIMARY KEY AUTO_INCREMENT, msg TEXT, cid INTEGER)");
+    $db->exec("CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTO_INCREMENT, msg TEXT, cid INTEGER)");
     $db = null;
 }
 
